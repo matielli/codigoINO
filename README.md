@@ -1,318 +1,194 @@
 Documentação do Código
 
-# **__MARKDOWN__**
+# **__Binary Adder__**
 
-Instituição
-Técnico em Desenvolvimento de Sistemas - SENAC NH
+Institution
+Technical in Systems Development - SENAC NH
 
-**Aluno**:
-**Rafael Matielli**
+Student:
+Rafael Matielli
 
-__Professor__:
-__Glauber Kiss de Souza__
+Professor:
+Glauber Kiss de Souza
 
-**Disciplina**:
-Analisar Orient. Técnicas
+Subject:
+Technical Analysis and Orientation
 
+General Description
 
+This program is developed for an Arduino microcontroller. It performs the addition of two 4-bit numbers, read from digital input pins, and displays the result on digital output pins, including the carry bit.
 
-**Descrição Geral**
+Global Variables
 
+soma: Variable to store the value read from pin 13, indicating whether the addition should be performed.
 
-Este programa é desenvolvido para um microcontrolador Arduino. Ele realiza a soma de dois números de 4 bits, lidos de pinos de entrada digitais, e exibe o resultado nos pinos de saída digitais, incluindo o bit de transporte (carry).
+carryBit: Stores the carry bit during addition.
 
+nib1a, nib1b, nib1c, nib1d: Bits of the first 4-bit number.
 
-__Variáveis Globais__
+nib2a, nib2b, nib2c, nib2d: Bits of the second 4-bit number.
 
+res1a, res1b, res1c, res1d: Results of the addition for each bit.
 
-soma: Variável para armazenar o valor lido do pino 13, que indica se a soma deve ser realizada.
-
-carryBit: Armazena o bit de transporte durante a soma.
-
-
-nib1a, nib1b, nib1c, nib1d: Bits do primeiro número de 4 bits.
-
-
-nib2a, nib2b, nib2c, nib2d: Bits do segundo número de 4 bits.
-
-
-res1a, res1b, res1c, res1d: Resultados da soma de cada bit.
-
-
-**Funções**
-
+Functions
 
 void setup()
-Configura os modos dos pinos digitais:
 
+Configures digital pin modes:
 
-Pinos 0 a 7 são configurados como entradas para ler os bits dos números a serem somados.
+Pins 0 to 7 are configured as inputs to read the bits of the numbers to be added.
 
-Pinos 8 a 12 são configurados como saídas para exibir o resultado da soma.
+Pins 8 to 12 are configured as outputs to display the addition result.
 
-Pino 13 é configurado como entrada para ler a flag que ativa a soma.
+Pin 13 is configured as an input to read the flag that activates the addition.
 
 cpp
-
 Copiar código
-
 void setup()
-
 {
-
     pinMode(0, INPUT);
-    
     pinMode(1, INPUT);
-    
     pinMode(2, INPUT);
-    
     pinMode(3, INPUT);
-    
     pinMode(4, INPUT);
-    
     pinMode(5, INPUT);
-    
     pinMode(6, INPUT);
-    
     pinMode(7, INPUT);
-    
     pinMode(8, OUTPUT);
-    
     pinMode(9, OUTPUT);
-    
     pinMode(10, OUTPUT);
-    
     pinMode(11, OUTPUT);
-    
     pinMode(12, OUTPUT);
-    
     pinMode(13, INPUT);
 }
-
-
 int somaBit(int b1a, int b2a, int cBit)
 
-Realiza a soma de dois bits (b1a e b2a) e do bit de transporte (cBit). Retorna o resultado do bit somado (sem o transporte).
-
-
-
+Performs addition of two bits (b1a and b2a) and a carry bit (cBit). Returns the result bit (without the carry).
 
 cpp
-
 Copiar código
-
 int somaBit(int b1a, int b2a, int cBit)
-
 {
-
     int bitResult = 0;
     
     if ((b1a ^ b2a) ^ cBit)
-    
     {
-    
         bitResult = 1;
     }
-    
-    
     else
-    
     {
-    
         bitResult = 0;
     }
     
-    
     return bitResult;
 }
-
-
 int somaCarryBit(int b1a, int b2a, int cBit)
 
-Calcula o bit de transporte resultante da soma de dois bits (b1a e b2a) e do bit de transporte (cBit). Retorna o bit de transporte.
-
-
+Calculates the carry bit resulting from the addition of two bits (b1a and b2a) and a carry bit (cBit). Returns the carry bit.
 
 cpp
-
 Copiar código
-
 int somaCarryBit(int b1a, int b2a, int cBit)
-
 {
-
     if ((b1a && b2a) || (b1a && cBit) || (b2a && cBit))
-    
     {
-    
         cBit = 1;
     }
-    
-    
     else
-    
     {
-    
         cBit = 0;
     }
     
-    
     return cBit;
-
 }
+Execution Flow
 
+Continuously executes the following steps:
 
-
-
-Executa continuamente as seguintes etapas:
-
-
-Lê a flag de soma do pino 13.
-
-Lê os bits dos dois números dos pinos 0 a 7.
-
-Se a flag de soma estiver ativada (soma == 1), realiza a soma bit a bit dos dois números, levando em conta o transporte.
-
-Escreve os resultados da soma e o bit de transporte nos pinos 8 a 12.
-
+Reads the addition flag from pin 13.
+Reads the bits of the two numbers from pins 0 to 7.
+If the addition flag is active (soma == 1), performs bit-by-bit addition of the two numbers, considering the carry.
+Writes the addition results and the carry bit to pins 8 to 12.
 cpp
-
 Copiar código
-
 void loop()
-
 {
-
     soma = digitalRead(13);
-    
     nib1a = digitalRead(0);
-    
     nib1b = digitalRead(1);
-    
     nib1c = digitalRead(2);
-    
     nib1d = digitalRead(3);
-    
     nib2a = digitalRead(4);
-    
     nib2b = digitalRead(5);
-    
     nib2c = digitalRead(6);
-    
     nib2d = digitalRead(7);
     
     if (soma == 1)
-    
     {
-    
         carryBit = 0;
-        
         res1a = somaBit(nib1a, nib2a, carryBit);
-        
         carryBit = somaCarryBit(nib1a, nib2a, carryBit);
-        
         res1b = somaBit(nib1b, nib2b, carryBit);
-        
         carryBit = somaCarryBit(nib1b, nib2b, carryBit);
-        
         res1c = somaBit(nib1c, nib2c, carryBit);
-        
         carryBit = somaCarryBit(nib1c, nib2c, carryBit);
-        
         res1d = somaBit(nib1d, nib2d, carryBit);
-        
         carryBit = somaCarryBit(nib1d, nib2d, carryBit);
     }
     
-    
     digitalWrite(8, res1a);
-    
     digitalWrite(9, res1b);
-    
     digitalWrite(10, res1c);
-    
     digitalWrite(11, res1d);
-    
     digitalWrite(12, carryBit);
 }
+Program Installation
 
+Materials Required
 
-Instalação do Programa
+Arduino Board (any model compatible with digital pins).
+USB cable to connect Arduino to the computer.
+Arduino IDE software installed on the computer.
+Breadboard and connecting wires.
+Buttons or switches to simulate digital inputs (optional).
+Installation Steps
 
-Materiais Necessários
+Hardware Setup
 
-Placa Arduino (qualquer modelo compatível com pinos digitais).
+Connect input wires to Arduino pins 0 to 7.
+Connect output wires to Arduino pins 8 to 12.
+Connect a button or switch to pin 13 to activate the addition.
+Software Setup
 
-Cabo USB para conectar o Arduino ao computador.
+Open Arduino IDE on the computer.
+Connect the Arduino board to the computer using the USB cable.
+Select the Arduino board and correct port from the "Tools" menu.
+Uploading the Code
 
-Software Arduino IDE instalado no computador.
+Copy the provided code to the text editor in Arduino IDE.
 
-Breadboard e fios de conexão.
+Click on "Verify" to compile the code and check for errors.
 
-Botões ou switches para simular entradas digitais (opcional).
+Click on "Load" to send the compiled code to the Arduino board.
 
-Passos para Instalação
+Commands to Run the Program
 
-Configuração do Hardware:
+Compiling and Uploading the Code
 
+Open Arduino IDE.
+Paste the code into the editor.
+Click on the "Verify" button (check icon) to compile.
+Click on the "Load" button (arrow icon) to upload the code to Arduino.
+Program Operation
 
+After the code is uploaded, Arduino will start running automatically.
+Set the input pins to the bits of the numbers you want to add.
+Activate the button/switch connected to pin 13 to perform the addition.
+Observe the output pins (8 to 12) to see the addition result.
+Summary
 
-Conecte os fios de entrada aos pinos 0 a 7 do Arduino.
+This Arduino program reads two 4-bit numbers from input pins, performs bit-by-bit addition considering the carry bit, and displays the result on output pins. Installation is straightforward, involving digital pin configuration and code uploading via Arduino IDE.
 
-Conecte os fios de saída aos pinos 8 a 12 do Arduino.
-
-Conecte um botão ou switch ao pino 13 para ativar a soma.
-
-Configuração do Software:
-
-
-
-Abra o Arduino IDE no computador.
-
-Conecte a placa Arduino ao computador usando o cabo USB.
-
-Selecione a placa Arduino e a porta correta no menu "Ferramentas".
-
-Carregamento do Código:
-
-
-
-Copie o código fornecido para o editor de texto no Arduino IDE.
-
-Clique em "Verificar" para compilar o código e verificar se há erros.
-
-Clique em "Carregar" para enviar o código compilado para a placa Arduino.
-
-Comandos para Executar o Programa
-
-Compilação e Carregamento do Código:
-
-
-
-Abra o Arduino IDE.
-
-Cole o código no editor.
-
-Clique no botão "Verificar" (ícone de check) para compilar.
-
-Clique no botão "Carregar" (ícone de seta) para enviar o código para o Arduino.
-
-Operação do Programa:
-
-
-
-Após o código ser carregado, o Arduino começará a executar automaticamente.
-
-Configure os pinos de entrada para os bits dos números que você deseja somar.
-
-Acione o botão/switch conectado ao pino 13 para ativar a soma.
-
-Observe os pinos de saída (8 a 12) para ver o resultado da soma.
-
-**Resumo**
-
-Este programa para Arduino lê dois números de 4 bits dos pinos de entrada, realiza a soma bit a bit considerando o bit de transporte, e exibe o resultado nos pinos de saída. A instalação é simples e envolve a configuração de pinos digitais e o carregamento do código 
-via Arduino IDE.
 
 
 
